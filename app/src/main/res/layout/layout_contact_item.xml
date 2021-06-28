@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:local="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#f7f7f7"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/catalog"
+            android:textSize="14sp"
+            android:textColor="#333333"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="3dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="3dp"
+
+            android:text="A" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical">
+
+        <View
+            android:id="@+id/checksel"
+            android:layout_width="25dp"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_text_select"
+            android:layout_height="25dp"/>
+        <TextView
+            android:id="@+id/tv_user_item_name"
+            android:textColor="#333333"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="45dp"
+            android:text=""
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_user_der"
+            android:textColor="#aaaaaa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_user_item_name"
+            android:layout_marginLeft="45dp"
+            android:text=""
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+</LinearLayout>

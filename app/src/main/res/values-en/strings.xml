@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+
+    <string name="lan_chinese">Chinese</string>
+    <string name="lan_en">English</string>
+
+    <string name="select_language">Choose a language</string>
+    <string name="lan_zh_rTYW">Chinese Traditional</string>
+    <string name="Follow_the_system">跟随系統</string>
+    <string name="app_name">WifiP2P</string>
+
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="click_search_phone">点击搜索手机号</string>
+    <string name="confirm_to_add">querentianjia</string>
+    <string name="checked_all">quanxuan</string>
+    <string name="contact_is_add">yitianjia</string>
+    <string name="call_next">连续拨打</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="tishi">This function has not been activated yet, please wait patiently </string>
+    <string name="finish">accomplish</string>
+    <string name="success">Transfer success </string>
+    <string name="prompt">hint</string>
+    <string name="fangrukuangnei">Put the QR code in the box</string>
+    <string name="saoyisao">RichScan</string>
+    <string name="Phone_Clone">Purple mobile phone clone</string>
+    <string name="new_phone">new phone</string>
+    <string name="Old_phone">Old phone</string>
+    <string name="Connect_old_phone">Connect old phone</string>
+    <string name="Quick_Download">Quick Download</string>
+    <string name="Scan_QR_code">Scan QR code</string>
+    <string name="Contacts">Contacts</string>
+    <string name="Gallery">Gallery</string>
+    <string name="Documents">Documents</string>
+    <string name="Calendar">Calendar</string>
+    <string name="Transfer_rate">Transfer rate</string>
+    <string name="Transfer_percent">Transfer percent</string>
+    <string name="Progress_Bar">Progress Bar</string>
+    <string name="Rate_us">Rate us</string>
+    <string name="Privacy_Policy">Privacy Policy</string>
+    <string name="Terms_of_Service">Terms of Service</string>
+    <string name="Share_with_friends">Share with friends</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Start_transfer">Start transfer</string>
+    <string name="All_selected">All selected</string>
+    <string name="share_to">Transfer percent</string>
+    <string name="open">Open "Phone Clone" on the old phone,</string>
+    <string name="open_2">select "Old phone" </string>
+    <string name="open_3">and scan the QR code below </string>
+    <string name="open_4">to establish a connection</string>
+    <!--    <string name="open">Open "Phone Clone" on the old phone, select "Old phone" and scan the QR code below to establish a connection</string>-->
+    <!--    <string name="download">If the latest version of the phone clone is not installed on the old phone, the file transfer will not be possible. Please click here to download the latest version</string>-->
+    <string name="download">If the latest version of the phone clone is not installed on the old phone, the file transfer will not be possible. </string>
+    <string name="download_2"> Please click here to download the latest version</string>
+    <string name="install">Install phone clone on old phone</string>
+    <string name="yingyong">Or search for "mobile clone" in the app store to find us</string>
+    <string name="QR">TSelect [New Phone] on the new device to generate a QR code</string>
+    <string name="neirong">Choose what to transfer</string>
+    <string name="huoquzhong">To obtain the</string>
+</resources>

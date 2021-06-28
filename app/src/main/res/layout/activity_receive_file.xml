@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <ImageView
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="25dp"
+        android:id="@+id/zxing_tui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@mipmap/img_back"/>
+    <TextView
+        android:id="@+id/tv_old"
+        android:layout_marginTop="22dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/zxing_tui"
+        android:layout_marginLeft="40dp"
+        android:text="@string/Connect_old_phone"
+        android:textSize="20sp"
+        android:textColor="#333333"/>
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@id/zxing_tui">
+
+        <TextView
+            android:id="@+id/tv_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_2"
+            android:textColor="#327fd9"
+            android:textSize="12sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_3"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llt"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintTop_toBottomOf="@id/ll">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_4"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/express_container"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/llt"
+        app:layout_constraintBottom_toTopOf="@+id/imM"/>
+    <ImageView
+        android:id="@+id/imM"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:layout_marginTop="80dp"
+        android:paddingLeft="20dp"
+        app:layout_constraintTop_toBottomOf="@id/imM">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:paddingLeft="16dp"
+        android:layout_margin="5dp"
+        app:layout_constraintTop_toBottomOf="@id/linear">
+
+        <TextView
+            android:id="@+id/download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/download_2"
+            android:textColor="#327fd9"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+       >
+        <TextView
+            android:id="@+id/tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

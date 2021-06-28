@@ -1,0 +1,3 @@
+include ':righttopmenu'
+include ':app'
+rootProject.name = "ContractBak"

@@ -1,0 +1,63 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
+    <string name="lan_chinese">簡體中文</string>
+    <string name="lan_en">英文</string>
+    <string name="lan_zh_rTYW">繁體中文</string>
+
+    <string name="select_language">選擇一種語言</string>
+    <string name="Follow_the_system">跟隨系統</string>
+
+
+    <string name="app_name">WifiP2P</string>
+
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="click_search_phone">点击搜索手机号</string>
+    <string name="confirm_to_add">确认添加</string>
+    <string name="checked_all">全选</string>
+    <string name="contact_is_add">已添加</string>
+    <string name="call_next">连续拨打</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="tishi">暫無開通此功能，請耐心等待哦 </string>
+    <string name="finish">完成 </string>
+    <string name="success">傳輸成功</string>
+    <string name="prompt">提示</string>
+    <string name="fangrukuangnei">将二维码放入框内</string>
+    <string name="saoyisao">掃一掃 </string>
+    <string name="Phone_Clone">紫中手機克隆</string>
+    <string name="new_phone">新手機</string>
+    <string name="Old_phone">舊手機</string>
+    <string name="Connect_old_phone">連接舊手機</string>
+    <string name="Quick_Download">快捷下載</string>
+    <string name="Scan_QR_code">掃描二維碼</string>
+    <string name="Contacts">通訊錄</string>
+    <string name="Gallery">相冊</string>
+    <string name="Documents">文檔</string>
+    <string name="Calendar">日曆</string>
+    <string name="Transfer_rate">傳輸速率</string>
+    <string name="Transfer_percent">傳輸百分比</string>
+    <string name="Progress_Bar">進度條</string>
+    <string name="Rate_us">給個好評</string>
+    <string name="Privacy_Policy">隱私政策</string>
+    <string name="Terms_of_Service">用戶協議</string>
+    <string name="Share_with_friends">分享給好友</string>
+    <string name="Cancel">取消</string>
+    <string name="Start_transfer">開始傳輸</string>
+    <string name="All_selected">已全選</string>
+    <string name="share_to">分享到</string>
+<!--    <string name="open">在舊手機打開“手機克隆”，選擇“舊手機”掃描下方二維碼建立連接</string>-->
+    <string name="open">在舊手機打開</string>
+    <string name="open_2">“手機克隆”</string>
+    <string name="open_3">，選擇“舊手機”</string>
+    <string name="open_4">掃描下方二維碼建立連接</string>
+<!--    <string name="download">如果舊手機沒安裝最新版手機克隆，將無法進行文件轉移。請點擊此處下載最新版本</string>-->
+    <string name="download">如果舊手機沒安裝最新版手機克隆，將無法進行文件轉移。</string>
+    <string name="download_2">請點擊此處下載最新版本</string>
+    <string name="install">舊手機安裝手機克隆</string>
+    <string name="yingyong">或者在應用商城搜索“手機克隆”找到我們</string>
+    <string name="QR">在新設備上選擇【新手機】生成二維碼</string>
+    <string name="neirong">選擇傳輸內容</string>
+    <string name="huoquzhong">獲取中</string>
+</resources>

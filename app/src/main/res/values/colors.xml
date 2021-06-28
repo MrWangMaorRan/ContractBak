@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--        <color name="colorPrimary">#6200EE</color>-->
+<!--        <color name="colorPrimaryDark">#3700B3</color>-->
+<!--        <color name="colorAccent">#03DAC5</color>-->
+<!--        <color name="colorAccentTrans">#7FD81B60</color>-->
+<!--        <color name="colorAccent2">#8F0000</color>-->
+
+<!--        <color name="purple_200">#FFBB86FC</color>-->
+<!--        <color name="purple_500">#FF6200EE</color>-->
+<!--        <color name="purple_700">#FF3700B3</color>-->
+<!--        <color name="teal_200">#FF03DAC5</color>-->
+<!--        <color name="teal_700">#FF018786</color>-->
+<!--        <color name="colorThem">#9507a6e6</color>-->
+<!--        <color name="white">#ffffff</color>-->
+<!--        <color name="black">#000000</color>-->
+<!--        -->
+                <color name="purple_200">#FFBB86FC</color>
+                <color name="purple_500">#FF6200EE</color>
+                <color name="purple_700">#FF3700B3</color>
+                <color name="teal_200">#FF03DAC5</color>
+                <color name="teal_700">#FF018786</color>
+                <color name="black">#FF000000</color>
+                <color name="white">#FFFFFFFF</color>
+
+                <color name="colorPrimary">#3F51B5</color>
+                <color name="colorPrimaryDark">#303F9F</color>
+                <color name="colorAccent">#FF4081</color>
+
+                <!-- 透明/白色 -->
+
+                <color name="transParent">#00000000</color>
+                <!-- 透明度：100% — FF，95% — F2,90% — E6，85% — D9,80% — CC，75% — BF,70% — B3，
+                     65% — A6，60% — 99，55% — 8C，50% — 80，45% — 73,40% — 66，35% — 59,30% — 4D，
+                     25% — 40，20% — 33，15% — 26，10% — 1A，5% — 0D，0% — 00 -->
+                <color name="halfTransParent">#20000000</color>
+                <color name="quarterTransParent">#40000000</color>
+                <color name="translucent">#60000000</color>
+                <!-- 黑色 -->
+                <color name="black_000000">#000000</color>
+                <color name="black_3c3c3c">#3C3C3C</color>
+                <color name="black_3d4047">#3D4047</color>
+                <color name="black_242528">#242528</color>
+                <!-- 蓝色 -->
+                <color name="blue_f0f3fc">#F0F3FC</color>
+                <color name="blue_cad6f9">#CAD6F9</color>
+                <color name="blue_2469ef">#2469EF</color>
+                <color name="blue_3f74fd">#3F74FD</color>
+                <color name="blue_f4f7ff">#F4F7FF</color>
+                <!-- 灰色 -->
+                <color name="gray_a4a4a4">#a4a4a4</color>
+                <color name="gray_91979c">#91979C</color>
+                <color name="gray_4e5255">#4e5255</color>
+                <color name="gray_d2d5db">#D2D5DB</color>
+                <color name="gray_e0e0e6">#E0E0E6</color>
+                <color name="gray_a8a9ae">#A8A9AE</color>
+                <color name="gray_ebedf1">#EBEDF1</color>
+                <color name="gray_bcbec4">#BCBEC4</color>
+                <color name="gray_a1a3aa">#A1A3AA</color>
+                <color name="gray_525459">#525459</color>
+                <color name="gray_848a8f">#848A8F</color>
+                <color name="gray_c3c5cb">#C3C5CB</color>
+                <color name="gray_eceef2">#ECEEF2</color>
+                <color name="gray_a1a5ae">#A1A5AE</color>
+                <color name="gray_56575a">#56575a</color>
+                <color name="gray_f2f5f8">#F2F5F8</color>
+                <color name="gray_f3f4f7">#F3F4F7</color>
+                <color name="gray_5b5e64">#5B5E64</color>
+                <color name="gray_eceff4">#ECEFF4</color>
+                <color name="gray_99ffffff">#99FFFFFF</color>
+                <color name="gray_bdc4ca">#BDC4CA</color>
+                <!-- 红色 -->
+                <color name="red_d01d00">#D01D00</color>
+                <color name="red_b0171f">#B0171F</color>
+                <color name="red_de3d3d">#DE3E3E</color>
+                <color name="red_fff1f1">#FFF1F1</color>
+                <color name="red_d81717">#D81717</color>
+
+
+
+</resources>

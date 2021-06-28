@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/topbar_leftbtn"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:background="@mipmap/topbar_leftbtn"/>
+
+        <TextView
+            android:id="@+id/topbar_title"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="选择传输文件"
+            android:layout_marginLeft="55dp"/>
+
+        <LinearLayout
+            android:layout_marginLeft="55dp"
+            android:id="@+id/topbar_layout"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/topbar_lab0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="网速:"/>
+
+                <TextView
+                    android:id="@+id/topbar_labvalue0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_toRightOf="@id/topbar_lab0"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:text="0KB/S"
+                    android:singleLine="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="100dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="center" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/topbar_lab1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#ffffff"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="传输百分比:"
+                android:scaleType="center" />
+
+                <TextView
+                    android:id="@+id/topbar_labvalue1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_toRightOf="@id/topbar_lab1"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="#ffffff"
+                    android:text="0%"
+                    android:singleLine="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/topbar_lab2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#ffffff"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="进度条:"
+                    android:scaleType="center" />
+                <ProgressBar
+                    android:id="@+id/topbar_labvalue2"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="0"
+                    android:layout_toRightOf="@id/topbar_lab2"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    
+    <RelativeLayout
+        android:id="@+id/layout_item1"
+        android:layout_width="match_parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="50dp">
+        <View
+            android:id="@+id/checkbox1"
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_text_select"
+            android:layout_height="25dp"/>
+
+        <View
+            android:id="@+id/img1"
+            android:layout_width="50dp"
+            android:background="@mipmap/contract"
+            android:layout_marginLeft="40dp"
+            android:layout_height="50dp"/>
+        <TextView
+            android:id="@+id/contract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="通讯录"
+            android:layout_marginLeft="100dp"
+            android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/contractdes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#aaaaaa"
+            android:gravity="center"
+            android:layout_marginLeft="100dp"
+            android:singleLine="true"
+            android:layout_marginBottom="10dp"
+            android:text="获取中"
+            android:layout_alignBottom="@id/img1"
+            android:scaleType="center" />
+        <View
+            android:id="@+id/right1"
+            android:layout_width="20dp"
+            android:background="@mipmap/icon_right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="20dp"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_item2"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="50dp">
+        <View
+            android:id="@+id/checkbox2"
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_text_select"
+            android:layout_height="25dp"/>
+
+        <View
+            android:id="@+id/img2"
+            android:layout_width="50dp"
+            android:background="@mipmap/photo"
+            android:layout_marginLeft="40dp"
+            android:layout_height="50dp"/>
+        <TextView
+            android:id="@+id/photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="相册"
+            android:layout_marginLeft="100dp"
+            android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/photodes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#aaaaaa"
+            android:gravity="center"
+            android:layout_marginLeft="100dp"
+            android:singleLine="true"
+            android:text="获取中"
+            android:layout_marginBottom="10dp"
+            android:layout_alignBottom="@id/img2"
+            android:scaleType="center" />
+        <View
+            android:id="@+id/right2"
+            android:layout_width="20dp"
+            android:background="@mipmap/icon_right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="20dp"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_item3"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="50dp">
+        <View
+            android:id="@+id/checkbox3"
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_text_select"
+            android:layout_height="25dp"/>
+
+        <View
+            android:id="@+id/img3"
+            android:layout_width="50dp"
+            android:background="@mipmap/calendar"
+            android:layout_marginLeft="40dp"
+            android:layout_height="50dp"/>
+        <TextView
+            android:id="@+id/calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="日历"
+            android:layout_marginLeft="100dp"
+            android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/calendardes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#aaaaaa"
+            android:gravity="center"
+            android:layout_marginLeft="100dp"
+            android:singleLine="true"
+            android:text="获取中"
+            android:layout_marginBottom="10dp"
+            android:layout_alignBottom="@id/img3"
+            android:scaleType="center" />
+        <View
+            android:id="@+id/right3"
+            android:layout_width="20dp"
+            android:background="@mipmap/icon_right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="20dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_item4"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_height="50dp">
+        <View
+            android:id="@+id/checkbox4"
+            android:layout_width="25dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_text_select"
+            android:layout_height="25dp"/>
+
+        <View
+            android:id="@+id/img4"
+            android:layout_width="50dp"
+            android:background="@mipmap/docment"
+            android:layout_marginLeft="40dp"
+            android:layout_height="50dp"/>
+        <TextView
+            android:id="@+id/docment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#333333"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="文档"
+            android:layout_marginLeft="100dp"
+            android:scaleType="center" />
+
+        <TextView
+            android:id="@+id/docmentdes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#aaaaaa"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="100dp"
+            android:singleLine="true"
+            android:text="获取中"
+            android:layout_alignBottom="@id/img4"
+            android:scaleType="center" />
+        <View
+            android:id="@+id/right4"
+            android:layout_width="20dp"
+            android:background="@mipmap/icon_right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="20dp"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_startsend"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="60dp"
+        android:background="@color/colorPrimary"
+        android:text="开始传输"
+        android:textColor="#ffffff"
+        android:textSize="18dp" />
+</LinearLayout>

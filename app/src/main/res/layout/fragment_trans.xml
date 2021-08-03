@@ -147,9 +147,16 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:visibility="gone"
         android:id="@+id/express_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"></FrameLayout>
+    <FrameLayout
+        android:id="@+id/tengxun"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"></FrameLayout>
 
     <RelativeLayout

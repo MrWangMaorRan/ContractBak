@@ -20,9 +20,6 @@ import android.widget.RelativeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Created by bytedance on 2019/9/5.
- */
 
 public class UIUtils {
 

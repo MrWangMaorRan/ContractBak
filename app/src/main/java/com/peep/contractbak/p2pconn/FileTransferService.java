@@ -1,29 +1,19 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
+
 
 package com.peep.contractbak.p2pconn;
 
 import android.app.IntentService;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.alibaba.fastjson.JSONObject;
 import com.peep.contractbak.bean.BaseBean;
 import com.peep.contractbak.client.ClientSocketFileManager;
 import com.peep.contractbak.client.ClientSocketManager;
 import com.peep.contractbak.server.ServerJsonUtils;
 import com.peep.contractbak.utils.ConstantUtils;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+
 
 /**
  * A service that process each file transfer request i.e Intent by opening a

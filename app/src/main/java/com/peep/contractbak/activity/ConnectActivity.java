@@ -2,12 +2,13 @@ package com.peep.contractbak.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
@@ -18,46 +19,47 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.alibaba.fastjson.JSONObject;
 import com.bytedance.sdk.openadsdk.AdSlot;
-import com.bytedance.sdk.openadsdk.TTAdConstant;
 import com.bytedance.sdk.openadsdk.TTAdNative;
-import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.bytedance.sdk.openadsdk.TTFullScreenVideoAd;
 import com.peep.contractbak.BaseActivity;
+import com.peep.contractbak.EventBusssss;
 import com.peep.contractbak.R;
 import com.peep.contractbak.bannerss.TTAdManagerHolder;
-import com.peep.contractbak.bannerss.TToast;
-import com.peep.contractbak.client.ClientSocketFileManager;
-import com.peep.contractbak.client.ClientSocketManager;
 import com.peep.contractbak.fragment.ConnectFragment;
 import com.peep.contractbak.fragment.ReceiveFileFragment;
 import com.peep.contractbak.fragment.ScannerFragment;
+import com.peep.contractbak.fragment.SettingFragment;
 import com.peep.contractbak.fragment.TransFragment;
 import com.peep.contractbak.p2pconn.WiFiDirectBroadcastReceiver;
 import com.peep.contractbak.server.ServerSocketFileServer;
 import com.peep.contractbak.server.ServerSocketManager;
-import com.peep.contractbak.splashs.SplashActivity;
 import com.peep.contractbak.utils.ConstantUtils;
+import com.peep.contractbak.utils.SharedPreferencesUtil;
 import com.peep.contractbak.utils.ToastUtils;
-import com.peep.contractbak.utils.ToolUtils;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.functions.Consumer;
 
@@ -70,11 +72,14 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     private TransFragment transFragment;
     public int curPoistion = 0;
     private RxPermissions mRxPermissions; //权限
-
-    private WifiP2pManager manager;
+    private TextView agreement;
+    private TextView cancel;
+    private TextView consent;
+    private TextView policy;
+    public WifiP2pManager manager;
     private boolean isWifiP2pEnabled = false;
     private boolean retryChannel = false;
-
+    private Dialog mShareDialog;
     private final IntentFilter intentFilter = new IntentFilter();
     private WifiP2pManager.Channel channel;
     private BroadcastReceiver receiver = null;
@@ -82,6 +87,12 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     private TTAdNative mTTAdNative;
     private AdSlot adSlot;
     private TTFullScreenVideoAd mttFullVideoAd;
+    private DownloadActivity downloadActivity;
+    private SettingFragment settingFragment;
+    private int cut;//判断是否在connectfragment显示的时候点击退出
+    private static boolean mbackKeyPressed =false;//记录是否有首次按键
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,10 +100,132 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
             finish();
             return;
         }
+
         setContentView(R.layout.activity_connect);
         initData();
-       // TTAdManagerHolder.getInstance(this).requestPermissionIfNecessary(this);
         mRxPermissions = new RxPermissions(this);
+        String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+        if (!ok.equals("123")){
+            onDialog();
+
+        }else {
+            initquanxian();
+            TTAdManagerHolder.init(ConnectActivity.this);
+            TTAdManagerHolder.get().requestPermissionIfNecessary(ConnectActivity.this);
+            //设置log开关，默认为false
+            UMConfigure.setLogEnabled(true);
+            String channel2 = AnalyticsConfig.getChannel(ConnectActivity.this);
+
+            UMConfigure.init(ConnectActivity.this,"6094e82e53b6726499ef471c"
+                    ,channel2,UMConfigure.DEVICE_TYPE_PHONE,"D45AA3A803900203B62D24B73BD373D4");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
+
+            // 微信设置
+            PlatformConfig.setWeixin("wx5065b5f66c421c89","ff04dbe008172da6b7664842f894d545");
+            PlatformConfig.setWXFileProvider("com.peep.contractbak.fileprovider");
+            PlatformConfig.setQQZone("1111950470", "9ihweOhIRyF2gTom");
+            PlatformConfig.setQQFileProvider("com.peep.contractbak.fileprovider");
+            // 选用AUTO页面采集模式
+            MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
+
+        }
+
+    }
+    public void onDialog(){
+        mShareDialog = new Dialog(this, R.style.dialog_bottom_full);
+        mShareDialog.setCanceledOnTouchOutside(false); //手指触碰到外界取消
+        mShareDialog.setCancelable(false);             //可取消 为true(屏幕返回键监听)
+        Window window = mShareDialog.getWindow();      // 得到dialog的窗体
+        window.setGravity(Gravity.CENTER);
+        window.setWindowAnimations(R.style.share_animation);
+        window.getDecorView().setPadding(150, 0, 150, 0);
+
+        View view = View.inflate(this, R.layout.dialog_lay_share_dialog, null); //获取布局视图
+        agreement = view.findViewById(R.id.agreement);
+        cancel = view.findViewById(R.id.cancel);
+        consent = view.findViewById(R.id.consent);
+        policy = view.findViewById(R.id.policy);
+        window.setContentView(view);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏
+
+        DialogListener();
+
+        mShareDialog.show();
+    }
+
+    private void DialogListener() {
+        agreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConnectActivity.this, AgreementActivity.class);
+                startActivity(intent);
+            }
+        });
+        policy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ConnectActivity.this, PolicyActivity.class);
+                startActivity(intent);
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mShareDialog.dismiss();
+                initGrantedConinute();
+            }
+        });
+        consent.setOnClickListener(new View.OnClickListener() {
+
+            private String ok="123";
+
+            @Override
+            public void onClick(View v) {
+                mShareDialog.dismiss();
+                SharedPreferencesUtil.getSharedPreferences(ConnectActivity.this).putString("OK",ok);
+                boolean wifi = isWifi(ConnectActivity.this);
+                if (wifi){
+
+                }else {
+                    ToastUtils.showToast(ConnectActivity.this,"请打开Wifi，确保两台手机在同一网络下");
+                }
+                initquanxian();
+                EventBus.getDefault().post(new EventBusssss.MessageWrap("已同意"));
+                TTAdManagerHolder.init(ConnectActivity.this);
+                TTAdManagerHolder.get().requestPermissionIfNecessary(ConnectActivity.this);
+                //设置log开关，默认为false
+                UMConfigure.setLogEnabled(true);
+                String channel2 = AnalyticsConfig.getChannel(ConnectActivity.this);
+
+                UMConfigure.init(ConnectActivity.this,"6094e82e53b6726499ef471c"
+                        ,channel2,UMConfigure.DEVICE_TYPE_PHONE,"D45AA3A803900203B62D24B73BD373D4");//58edcfeb310c93091c000be2 5965ee00734be40b580001a0
+
+                // 微信设置
+                PlatformConfig.setWeixin("wx5065b5f66c421c89","ff04dbe008172da6b7664842f894d545");
+                PlatformConfig.setWXFileProvider("com.peep.contractbak.fileprovider");
+                PlatformConfig.setQQZone("1111950470", "9ihweOhIRyF2gTom");
+                PlatformConfig.setQQFileProvider("com.peep.contractbak.fileprovider");
+                // 选用AUTO页面采集模式
+                MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
+            }
+        });
+    }
+    //判断Wifi是否连接
+    private static boolean isWifi(Context mContext) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            //Toast.makeText(mContext, "WIFI连接成功", Toast.LENGTH_SHORT).show();
+            return true;
+        }else {
+           // Toast.makeText(mContext, "WIFI无连接", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    private void initquanxian() {
+        // TTAdManagerHolder.getInstance(this).requestPermissionIfNecessary(this);
+
         uiHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -108,13 +241,18 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        startScanAsServer();  //启动服务端
+                        if(manager==null){
+
+                        }else {
+                            startScanAsServer();  //启动服务器
+                        }
+
                     }
                 },2000L);
 
             }
-        },1000L);
 
+        },1000L);
     }
 
 
@@ -150,14 +288,16 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
 
 
     private void initData(){
+        downloadActivity = new DownloadActivity();
         connectFragment = new ConnectFragment();
         scannerFragment = new ScannerFragment();
         transFragment = new TransFragment();
         //新加
         receiveFileFragment = new ReceiveFileFragment();
+        settingFragment = new SettingFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.part1, connectFragment).replace(R.id.part2, scannerFragment).replace(R.id.part3, transFragment).replace(R.id.part4, receiveFileFragment);
-        transaction.show(connectFragment).hide(scannerFragment).hide(transFragment).hide(receiveFileFragment);
+        transaction.replace(R.id.part1, connectFragment).replace(R.id.part2, scannerFragment).replace(R.id.part3, transFragment).replace(R.id.part4, receiveFileFragment).replace(R.id.part5,settingFragment);
+        transaction.show(connectFragment).hide(scannerFragment).hide(transFragment).hide(receiveFileFragment).hide(settingFragment);
         transaction.commitAllowingStateLoss();
         curPoistion = 0;
     }
@@ -169,16 +309,29 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch(nextPoistion){
             case 0:
-                transaction.show(connectFragment).hide(scannerFragment).hide(transFragment).hide(receiveFileFragment);
+                transaction.show(connectFragment).hide(scannerFragment).hide(transFragment).hide(receiveFileFragment).hide(settingFragment);
+               cut=0;
+                Log.i("cutsss",cut+"");
                 break;
             case 1:
-                transaction.hide(connectFragment).show(scannerFragment).hide(transFragment).hide(receiveFileFragment);
+                transaction.hide(connectFragment).show(scannerFragment).hide(transFragment).hide(receiveFileFragment).hide(settingFragment);
+                cut=1;
+                Log.i("cutsss",cut+"");
                 break;
             case 2:
-                transaction.hide(connectFragment).hide(scannerFragment).show(transFragment).hide(receiveFileFragment);
+                transaction.hide(connectFragment).hide(scannerFragment).show(transFragment).hide(receiveFileFragment).hide(settingFragment);
+                cut=2;
+                Log.i("cutsss",cut+"");
                 break;
             case 3:
-                transaction.hide(connectFragment).hide(scannerFragment).show(receiveFileFragment).hide(transFragment);
+                transaction.hide(connectFragment).hide(scannerFragment).show(receiveFileFragment).hide(transFragment).hide(settingFragment);
+                cut=3;
+                Log.i("cutsss",cut+"");
+                break;
+            case 4:
+                transaction.hide(connectFragment).hide(scannerFragment).hide(receiveFileFragment).hide(transFragment).show(settingFragment);
+                cut=4;
+                Log.i("cutsss",cut+"");
                 break;
         }
         transaction.commitAllowingStateLoss();
@@ -187,14 +340,20 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
 
     @Override
     public void onBackPressed() {
-        if(null != transFragment && null != transFragment.transThread){
-            ToastUtils.showToast(this,"传输过程中不允许退出");
-            return;
-        }
-        if (ConstantUtils.TRANS_SERVER){
+        if (cut==0){
+            super.onBackPressed();
+        }else {
+            if(null != transFragment && null != transFragment.transThread){
+                ToastUtils.showToast(this,"传输过程中不允许退出");
+                return;
+            }
+            if (ConstantUtils.TRANS_SERVER){
 
-            return;
+                return;
+            }
         }
+
+
 //        if(ConstantUtils.TRANS_SERVER){
 //            ToastUtils.showToast(this,"传输过程中不允许退出");
 //            return;
@@ -229,14 +388,29 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
 //    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (null != scannerFragment) {
-            boolean flag = scannerFragment.onKeyDown(keyCode, event);
-            if (flag) {
-                return true;
+        if (cut==0){
+            if (!mbackKeyPressed){
+                Toast.makeText(this,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+                mbackKeyPressed =true;
+                new Timer().schedule(new TimerTask() {  //延时两秒
+                    @Override
+                    public void run() {
+                        mbackKeyPressed = false;
+                    }
+                },2000);
+            }else {//退出程序
+                this.finish();
+            }
+        }else {
+            if (null != scannerFragment){
+                boolean flag =scannerFragment.onKeyDown(keyCode,event);
+                if (flag){
+                    return true;
+                }
             }
         }
 
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
 
 
@@ -351,7 +525,7 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
 
             @Override
             public void onFailure(int reasonCode) {
-                ToastUtils.showToast(ConnectActivity.this, "P2p服务器失败~" + reasonCode);
+                ToastUtils.showToast(ConnectActivity.this, "P2p服务器失败~，请检查是否开启WiFi并确认权限");
             }
         });
     }
@@ -395,6 +569,7 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
         manager.removeGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onFailure(int reasonCode) {
+
             }
 
             @Override
@@ -441,7 +616,7 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     }
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo info) {
-        Log.d("tag", "最终链接成功~~~");
+        Log.d("tag", "最终连接成功~~~");
 
         if (ConstantUtils.TRANS_SERVER) {
 
@@ -457,7 +632,10 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        removeDisconnect();
+        if (manager!=null){
+            removeDisconnect();
+        }
+
         if (mttFullVideoAd != null) {
             mttFullVideoAd = null;
         }
@@ -503,14 +681,14 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     /**
      * 请求照相机权限
      * */
-    public void requestPermission4(final int nextPosition) {
+    public void requestPermission1(final int nextPosition) {
         mRxPermissions.requestEach(permissionsCamera)
                 .subscribe(new Consumer<Permission>() {
                     @Override
                     public void accept(Permission permission) throws Exception {
                         if (permission.granted) {
                             //ALLOWED_FLAG = true;
-                            requestPermission1(nextPosition);
+                            requestPermission2(nextPosition);
 
                         }else {
                             Toast.makeText(ConnectActivity.this,"没有权限，相关功能无法使用！", Toast.LENGTH_LONG).show();
@@ -521,7 +699,7 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
     /**
      * 请求存储权限
      * */
-    public void requestPermission1(final int nextPosition) {
+    public void requestPermission4(final int nextPosition) {
 
         mRxPermissions.requestEach(permissionsStroage)
                 .subscribe(new Consumer<Permission>() {
@@ -531,7 +709,6 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
                             ALLOWED_FLAG = true;
 //                            //加载开屏广告
 //                            loadSplashAd();
-                            //加载开屏广告
                             changeFragment(nextPosition);
                         }else {
                             Toast.makeText(ConnectActivity.this,"没有权限，相关功能无法使用！", Toast.LENGTH_LONG).show();
@@ -544,5 +721,6 @@ public class ConnectActivity extends BaseActivity implements  WifiP2pManager.Cha
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
+
 
 }

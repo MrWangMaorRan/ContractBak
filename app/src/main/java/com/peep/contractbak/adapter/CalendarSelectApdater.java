@@ -7,15 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.peep.contractbak.R;
 import com.peep.contractbak.activity.CalendarSelectActivity;
-import com.peep.contractbak.activity.DocSelectActivity;
-import com.peep.contractbak.bean.CalendarBean;
 import com.peep.contractbak.bean.CalendarSelectHelper;
-import com.peep.contractbak.bean.FileSelectHelper;
 import com.peep.contractbak.utils.CommonUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 

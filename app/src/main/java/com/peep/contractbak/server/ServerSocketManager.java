@@ -1,12 +1,7 @@
 package com.peep.contractbak.server;
 
 import android.util.Log;
-import android.view.View;
-
-import com.peep.contractbak.fragment.ReceiveFileFragment;
 import com.peep.contractbak.utils.ConstantUtils;
-
-import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 

@@ -2,49 +2,44 @@ package com.peep.contractbak;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ComponentActivity;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
-import com.bytedance.sdk.openadsdk.TTAdConstant;
-import com.bytedance.sdk.openadsdk.TTAdManager;
 import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFullScreenVideoAd;
-import com.peep.contractbak.bannerss.TTAdManagerHolder;
 import com.peep.contractbak.bannerss.TToast;
+import com.peep.contractbak.tengxun.DownloadConfirmHelper;
 import com.peep.contractbak.utils.ScreenUtils;
 import com.peep.contractbak.utils.SharedPreferencesUtil;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.qq.e.ads.cfg.VideoOption;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialMediaListener;
+import com.qq.e.comm.managers.GDTADManager;
+import com.qq.e.comm.util.AdError;
 
 import java.util.List;
+import java.util.Locale;
 
-import io.reactivex.functions.Consumer;
 
 /**
  * 全局抽象类
  * */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements UnifiedInterstitialMediaListener, UnifiedInterstitialADListener {
 
     public Handler uiHandler = new Handler();
     private ProgressDialog loadingDialog = null;  //初始化等待动画
@@ -59,6 +54,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private boolean mIsLoaded = false; //视频是否加载完成
     private TTAdNative mTTAdNative_chaping;
     public static boolean isActive; //全局变量
+    private String currentPosId;
+    private UnifiedInterstitialAD iad;
+
     /**
      * 权限组
      */
@@ -94,12 +92,58 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //step1:初始化sdk
-        TTAdManager ttAdManager = TTAdManagerHolder.get();
-        //step3:创建TTAdNative对象,用于调用广告请求接口
-        mTTAdNative_chaping = ttAdManager.createAdNative(this);
-        //loadAd("946274412", TTAdConstant.VERTICAL);
+        String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+        if (ok.equals("123")){
+//            TTAdManagerHolder.init(this);
+////            TTAdManagerHolder.get().requestPermissionIfNecessary(this);
+////            //step1:初始化sdk
+////            TTAdManager ttAdManager = TTAdManagerHolder.get();
+////            //step3:创建TTAdNative对象,用于调用广告请求接口
+////            mTTAdNative_chaping = ttAdManager.createAdNative(this);
+////            //loadAd("946274412", TTAdConstant.VERTICAL);
+            GDTADManager.getInstance().initWith(this, "1200005572");
+
+        }
+
     }
+    private void showAD() {
+        if (iad != null && iad.isValid()) {
+            iad.show();
+        } else {
+            //Toast.makeText(this, "请加载广告并渲染成功后再进行展示 ！ ", Toast.LENGTH_LONG).show();
+
+        }
+    }
+    private void setVideoOption() {
+        VideoOption.Builder builder = new VideoOption.Builder();
+        VideoOption option = builder.build();
+//        if(!btnNoOption.isChecked()){
+//            option = builder.setAutoPlayMuted(true)
+//                    .setAutoPlayPolicy()
+//                    .setDetailPageMuted(btnDetailMute.isChecked())
+//                    .build();
+     //   }
+        iad.setVideoOption(option);
+//        iad.setMinVideoDuration();
+//        iad.setMaxVideoDuration();
+        iad.setVideoPlayPolicy(option.getAutoPlayPolicy());
+    }
+
+
+    private UnifiedInterstitialAD getIAD() {
+        if (this.iad != null) {
+            iad.close();
+            iad.destroy();
+        }
+        String posId = "4062804912589595";
+        if (!posId.equals(currentPosId) || iad == null) {
+            iad = new UnifiedInterstitialAD(this, posId, this);
+            iad.setMediaListener(this);
+            currentPosId = posId;
+        }
+        return iad;
+    }
+
 
     @SuppressWarnings("SameParameterValue")
     private void loadAd(String codeId, int orientation) {
@@ -222,6 +266,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     int screen=0;
+    int stopss=0;
+   boolean qiantai=false;
     @Override
     protected void onResume() {
         super.onResume();
@@ -234,16 +280,25 @@ public abstract class BaseActivity extends AppCompatActivity {
             screen++;
             SharedPreferencesUtil.getSharedPreferences(this).putInt("screen",screen);
             Log.i("ACTIVITY", "程序从后台唤醒");
-            if (mttFullVideoAd != null&&screen%8==0) {
-                //step6:在获取到广告后展示
-                //该方法直接展示广告
-                //mttFullVideoAd.showFullScreenVideoAd(FullScreenVideoActivity.this);
-                //展示广告，并传入广告展示的场景
-                mttFullVideoAd.showFullScreenVideoAd(this, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
-                mttFullVideoAd = null;
+//            if (mttFullVideoAd != null&&screen%2==0) {
+//                //穿山甲广告
+//                //step6:在获取到广告后展示
+//                //该方法直接展示广告
+//                //mttFullVideoAd.showFullScreenVideoAd(FullScreenVideoActivity.this);
+//                //展示广告，并传入广告展示的场景
+////                mttFullVideoAd.showFullScreenVideoAd(this, TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
+////                mttFullVideoAd = null;
+//
+//
+//            } else {
+//               // TToast.show(this, "请先加载广告");
+//            }
+            String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+            if (screen%2==0&&iad!=null&&qiantai==true&&ok.equals("123")){
+                //展示腾讯广告
+                showAD();
                 SharedPreferencesUtil.getSharedPreferences(this).remove("screen");
-            } else {
-               // TToast.show(this, "请先加载广告");
+                qiantai=false;
             }
         }
 
@@ -254,7 +309,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             //app 进入后台
             isActive = false;//记录当前已经进入后台
             Log.i("ACTIVITY", "程序进入后台");
-            loadAd("946274412", TTAdConstant.VERTICAL);
+            stopss = SharedPreferencesUtil.getSharedPreferences(this).getInt("stopss", stopss);
+            stopss++;
+            String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+            if (ok.equals("123")) {
+                if (stopss%2==0){
+                    //穿山甲
+                    // loadAd("946274412", TTAdConstant.VERTICAL);
+                    //腾讯广告
+                    iad = getIAD();
+                    setVideoOption();
+                    iad.loadAD();
+                    SharedPreferencesUtil.getSharedPreferences(this).remove("stopss");
+                }
+
+
+            }
         }
         super.onStop();
     }
@@ -281,6 +351,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         return false;
     }
+
 
 
     @Override
@@ -340,5 +411,111 @@ public abstract class BaseActivity extends AppCompatActivity {
                 loadingDialog.cancel();
             }
         },100L);}catch (Throwable r){}
+    }
+
+    @Override
+    public void onADReceive() {
+        //Toast.makeText(this, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
+        // onADReceive之后才可调用getECPM()
+        Log.d(TAG, "onADReceive eCPMLevel = " + iad.getECPMLevel()+ ", ECPM: " + iad.getECPM() + ", videoduration=" + iad.getVideoDuration());
+        qiantai =true;
+        if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
+            iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
+        }
+    }
+
+    @Override
+    public void onVideoCached() {
+        // 视频素材加载完成，在此时调用iad.show()或iad.showAsPopupWindow()视频广告不会有进度条。
+        Log.i(TAG, "onVideoCached");
+    }
+
+    @Override
+    public void onNoAD(AdError adError) {
+        String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
+                adError.getErrorCode(), adError.getErrorMsg());
+        Log.i(TAG, msg);
+        //Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onADOpened() {
+        Log.i(TAG, "onADOpened");
+    }
+
+    @Override
+    public void onADExposure() {
+        Log.i(TAG, "onADExposure");
+    }
+
+    @Override
+    public void onADClicked() {
+        Log.i(TAG, "onADClicked");
+    }
+
+    @Override
+    public void onADLeftApplication() {
+        Log.i(TAG, "onADLeftApplication");
+    }
+
+    @Override
+    public void onADClosed() {
+        Log.i(TAG, "onADClosed");
+    }
+
+    @Override
+    public void onRenderSuccess() {
+        Log.i(TAG, "onRenderSuccess，建议在此回调后再调用展示方法");
+
+    }
+
+    @Override
+    public void onRenderFail() {
+        Log.i(TAG, "onRenderFail");
+    }
+
+    @Override
+    public void onVideoInit() {
+        Log.i(TAG, "onVideoInit");
+    }
+
+    @Override
+    public void onVideoLoading() {
+        Log.i(TAG, "onVideoLoading");
+    }
+
+    @Override
+    public void onVideoReady(long l) {
+        Log.i(TAG, "onVideoReady, duration = " + l);
+    }
+
+    @Override
+    public void onVideoStart() {
+        Log.i(TAG, "onVideoStart");
+    }
+
+    @Override
+    public void onVideoPause() {
+        Log.i(TAG, "onVideoPause");
+    }
+
+    @Override
+    public void onVideoComplete() {
+        Log.i(TAG, "onVideoComplete");
+    }
+
+    @Override
+    public void onVideoError(AdError adError) {
+        Log.i(TAG, "onVideoError, code = " + adError.getErrorCode() + ", msg = " + adError.getErrorMsg());
+    }
+
+    @Override
+    public void onVideoPageOpen() {
+        Log.i(TAG, "onVideoPageOpen");
+    }
+
+    @Override
+    public void onVideoPageClose() {
+        Log.i(TAG, "onVideoPageClose");
     }
 }

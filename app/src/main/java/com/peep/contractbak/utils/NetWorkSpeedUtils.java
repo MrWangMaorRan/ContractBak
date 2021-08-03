@@ -1,15 +1,10 @@
 package com.peep.contractbak.utils;
 
-import android.content.Context;
-import android.net.TrafficStats;
-import android.os.Handler;
-import android.os.Message;
 
+import android.net.TrafficStats;
 import com.peep.contractbak.BaseApplication;
 import com.peep.contractbak.thread.ThreadPoolUtils;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**.
  */

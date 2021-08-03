@@ -1,17 +1,10 @@
 package com.peep.contractbak.server;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSONObject;
+import android.util.Log;
 import com.peep.contractbak.BaseApplication;
-import com.peep.contractbak.bean.BaseBean;
 import com.peep.contractbak.utils.CommonUtils;
 import com.peep.contractbak.utils.ConstantUtils;
-import com.peep.contractbak.utils.ToolUtils;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

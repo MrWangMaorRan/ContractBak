@@ -1,33 +1,23 @@
 package com.peep.contractbak.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.DislikeInfo;
@@ -39,31 +29,23 @@ import com.bytedance.sdk.openadsdk.TTAdNative;
 import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
-import com.lwy.righttopmenu.MenuItem;
 import com.lwy.righttopmenu.RightTopMenu;
-import com.peep.contractbak.BuildConfig;
+import com.peep.contractbak.tengxun.DownloadConfirmHelper;
 import com.peep.contractbak.bannerss.DislikeDialog;
 import com.peep.contractbak.bannerss.TTAdManagerHolder;
-import com.peep.contractbak.bannerss.TToast;
-import com.peep.contractbak.BaseActivity;
 import com.peep.contractbak.R;
-import com.peep.contractbak.activity.AgreementActivity;
 import com.peep.contractbak.activity.ConnectActivity;
-import com.peep.contractbak.activity.PolicyActivity;
 import com.peep.contractbak.utils.ConstantUtils;
 import com.peep.contractbak.utils.SharedPreferencesUtil;
-import com.umeng.socialize.ShareAction;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMWeb;
-import com.umeng.socialize.shareboard.SnsPlatform;
-import com.umeng.socialize.utils.ShareBoardlistener;
+import com.qq.e.ads.banner2.UnifiedBannerADListener;
+import com.qq.e.ads.banner2.UnifiedBannerView;
+import com.qq.e.comm.managers.GDTADManager;
+import com.qq.e.comm.util.AdError;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class ConnectFragment extends Fragment implements View.OnClickListener {
+public class ConnectFragment extends Fragment implements View.OnClickListener, UnifiedBannerADListener {
     private Dialog mShareDialog;
     private View baseView;
     private ConnectActivity connectActivity;
@@ -80,8 +62,9 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
     private Context mContext;
     private TTAdNative mTTAdNative;
     private String TAG="ConnectFragment";
-    private ShareAction shareAction;
-
+    ViewGroup bannerContainer;
+    UnifiedBannerView bv;
+    String currentPosId;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,224 +79,70 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
 
         connectActivity = (ConnectActivity)getActivity();
         onTobat();
-        String ok = SharedPreferencesUtil.getSharedPreferences(getActivity()).getString("OK", "");
-        if (ok==null||!ok.equals("123")){
-            onDialog();
-        }
         initView();
-        TTAdManagerHolder.get().requestPermissionIfNecessary(getActivity());
-        fenxiang();
-        initBanners();
+
+        String ok = SharedPreferencesUtil.getSharedPreferences(getActivity()).getString("OK", "");
+        Log.i("OKOKOK",ok);
+        if (ok.equals("123")){
+//            TTAdManagerHolder.get().requestPermissionIfNecessary(getActivity());
+//            initBanners();
+            GDTADManager.getInstance().initWith(connectActivity, "1200005572");
+            getBanner().loadAD();
+        }
+    }
+    protected UnifiedBannerView getBanner() {
+        String editPosId ="2062803832334052";
+        if (bv == null || !editPosId.equals(currentPosId)) {
+            if(this.bv != null){
+                bv.destroy();
+            }
+            bv = new UnifiedBannerView(getActivity(), editPosId,this );
+            currentPosId = editPosId;
+            bannerContainer.removeAllViews();
+            bannerContainer.addView(bv, getUnifiedBannerLayoutParams());
+        }
+
+        return this.bv;
     }
 
-    public void onDialog(){
-        mShareDialog = new Dialog(getContext(), R.style.dialog_bottom_full);
-        mShareDialog.setCanceledOnTouchOutside(false); //手指触碰到外界取消
-        mShareDialog.setCancelable(false);             //可取消 为true(屏幕返回键监听)
-        Window window = mShareDialog.getWindow();      // 得到dialog的窗体
-        window.setGravity(Gravity.CENTER);
-        window.setWindowAnimations(R.style.share_animation);
-        window.getDecorView().setPadding(150, 0, 150, 0);
 
-        View view = View.inflate(getContext(), R.layout.dialog_lay_share_dialog, null); //获取布局视图
-        agreement = view.findViewById(R.id.agreement);
-        cancel = view.findViewById(R.id.cancel);
-        consent = view.findViewById(R.id.consent);
-        policy = view.findViewById(R.id.policy);
-        window.setContentView(view);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏
-
-        DialogListener();
-
-        mShareDialog.show();
+    /**
+     * banner2.0规定banner宽高比应该为6.4:1 , 开发者可自行设置符合规定宽高比的具体宽度和高度值
+     *
+     * @return
+     */
+    private FrameLayout.LayoutParams getUnifiedBannerLayoutParams() {
+        Point screenSize = new Point();
+        connectActivity.getWindowManager().getDefaultDisplay().getSize(screenSize);
+        return new FrameLayout.LayoutParams(screenSize.x,  Math.round(screenSize.x / 6.4F));
     }
-    private void DialogListener() {
-        agreement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AgreementActivity.class);
-                startActivity(intent);
-            }
-        });
-        policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PolicyActivity.class);
-                startActivity(intent);
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-        consent.setOnClickListener(new View.OnClickListener() {
-
-            private String ok="123";
-
-            @Override
-            public void onClick(View v) {
-                mShareDialog.dismiss();
-                SharedPreferencesUtil.getSharedPreferences(getContext()).putString("OK",ok);
-            }
-        });
-    }
     public void  onTobat(){
         mMenuIV = baseView.findViewById(R.id.menu_iv);
         mMenuIV.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                List<com.lwy.righttopmenu.MenuItem> menuItems = new ArrayList<>();
-                menuItems.add(new com.lwy.righttopmenu.MenuItem(R.mipmap.fenxiang, getResources().getString(R.string.Share_with_friends), 100));
-                menuItems.add(new com.lwy.righttopmenu.MenuItem(R.mipmap.pinglun,getResources().getString(R.string.Rate_us), 0));
-                menuItems.add(new com.lwy.righttopmenu.MenuItem(R.mipmap.yinsi, getResources().getString(R.string.Privacy_Policy)));
-                menuItems.add(new MenuItem(R.mipmap.xieyi, getResources().getString(R.string.Terms_of_Service)));
-                if (mRightTopMenu == null) {
-                  //  Log.i("点击了","点击了");
-                    mRightTopMenu = new RightTopMenu.Builder(getActivity())
-//                            .windowHeight(480)     //当菜单数量大于3个时，为wrap_content,反之取默认高度320
-//                        .windowWidth()      //默认宽度wrap_content
-                            .dimBackground(true)           //背景变暗，默认为true
-                            .needAnimationStyle(true)   //显示动画，默认为true
-                            .animationStyle(R.style.RTM_ANIM_STYLE)  //默认为R.style.RTM_ANIM_STYLE
-
-                            .menuItems(menuItems)
-                            .onMenuItemClickListener(new RightTopMenu.OnMenuItemClickListener() {
-                                @Override
-                                public void onMenuItemClick(int position) {
-                                    final String[] cities = {getString(R.string.lan_chinese), getString(R.string.lan_en),getString(R.string.lan_zh_rTYW),getString(R.string.Follow_the_system)};
-                                    final String[] locals = {"zh_CN", "en","zh_TW","111"};
-                                    if (position==0){
-                                        shareAction.open();
-                                    }else if (position==1){
-                                        //Toast.makeText(getContext(), getResources().getString(R.string.tishi), Toast.LENGTH_LONG).show();
-                                        goRate();
-                                    }else if (position==2){
-                                        Intent intent = new Intent(getContext(), PolicyActivity.class);
-                                        startActivity(intent);
-                                    }else if (position==3){
-                                        Intent intent = new Intent(getContext(), AgreementActivity.class);
-                                        startActivity(intent);
-
-                                        // Duoyuyan();
-                                    }
-
-                                }
-                            }).build();
-                }
-                mRightTopMenu.showAsDropDown(mMenuIV, 0, 0);
+            public void onClick(View view) {
+                connectActivity.changeFragment(4);
             }
         });
-    }
-
-//去应用市场好评
-    void goRate(){
-        String market = "market://details?id=" + BuildConfig.APPLICATION_ID;
-        Uri uri = Uri.parse(market);
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        try {
-            startActivity(goToMarket);
-        } catch (ActivityNotFoundException e) {
-            String url = "http://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID;
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(url)));
-        }
-    }
-
-
-    private void fenxiang(){
-        /*增加自定义按钮的分享面板*/
-        shareAction = new ShareAction(getActivity()).setDisplayList(
-                SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
-                SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE)
-//                SHARE_MEDIA.WXWORK
-//                SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE,
-//                SHARE_MEDIA.ALIPAY, SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN,
-//                SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL, SHARE_MEDIA.YNOTE,
-//                SHARE_MEDIA.EVERNOTE, SHARE_MEDIA.LAIWANG, SHARE_MEDIA.LAIWANG_DYNAMIC,
-//                SHARE_MEDIA.LINKEDIN, SHARE_MEDIA.YIXIN, SHARE_MEDIA.YIXIN_CIRCLE,
-//                SHARE_MEDIA.TENCENT, SHARE_MEDIA.FACEBOOK, SHARE_MEDIA.TWITTER,
-//                SHARE_MEDIA.WHATSAPP, SHARE_MEDIA.GOOGLEPLUS, SHARE_MEDIA.LINE,
-//                SHARE_MEDIA.INSTAGRAM, SHARE_MEDIA.KAKAO, SHARE_MEDIA.PINTEREST,
-//                SHARE_MEDIA.POCKET, SHARE_MEDIA.TUMBLR, SHARE_MEDIA.FLICKR,
-//                SHARE_MEDIA.FOURSQUARE, SHARE_MEDIA.MORE)
-                .addButton("复制文本", "复制文本", "umeng_socialize_copy", "umeng_socialize_copy")
-                .addButton("复制链接", "复制链接", "umeng_socialize_copyurl", "umeng_socialize_copyurl")
-                .setShareboardclickCallback(new ShareBoardlistener() {
-                    @Override
-                    public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
-                        if (snsPlatform.mShowWord.equals("复制文本")) {
-                            Toast.makeText(getContext(), "复制文本按钮", Toast.LENGTH_LONG).show();
-                        } else if (snsPlatform.mShowWord.equals("复制链接")) {
-                            Toast.makeText(getContext(), "复制链接按钮", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            UMWeb web = new UMWeb("https://www.pgyer.com/QvRI");
-                            web.setTitle("手机克隆");
-                            web.setDescription("一款一键同步手机内容的产品");
-                            web.setThumb(new UMImage(getContext(), R.mipmap.icon_name));
-                            new ShareAction(getActivity()).withMedia(web)
-                                    .setPlatform(share_media)
-                                    .setCallback(shareListener)
-                                    .share();
-                        }
-                    }
-                });
 
     }
 
-    private UMShareListener shareListener =new UMShareListener(){
-/**
- * @descrption 分享开始的回调
- * @param platform 平台类型
- */
-        @Override
-        public void onStart(SHARE_MEDIA platform){
 
-        }
 
-/**
- * @descrption 分享成功的回调
- * @param platform 平台类型
- */
-        @Override
-        public void onResult(SHARE_MEDIA platform){
-            Toast.makeText(getActivity(),"成功了",Toast.LENGTH_LONG).show();
-        }
 
-/**
- * @descrption 分享失败的回调
- * @param platform 平台类型
- * @param t 错误原因
- */
-        @Override
-        public void onError(SHARE_MEDIA platform,Throwable t){
-            Toast.makeText(getContext(),"失败"+t.getMessage(),Toast.LENGTH_LONG).show();
-            Log.i("失败",t.getMessage());
-        }
 
-/**
- * @descrption 分享取消的回调
- * @param platform 平台类型
- */
-        @Override
-        public void onCancel(SHARE_MEDIA platform){
-            Toast.makeText(getContext(),"取消了分享",Toast.LENGTH_LONG).show();
-
-        }
-    };
 
     private void initView() {
 //        imgeView = baseView.findViewById(R.id.codeImg);
 //        imgeView.setVisibility(View.GONE);
-        Button loginBtn = baseView.findViewById(R.id.news);
+        LinearLayout loginBtn = baseView.findViewById(R.id.news);
         loginBtn.setOnClickListener(this);
-        Button registerBtn = baseView.findViewById(R.id.old);
+        LinearLayout registerBtn = baseView.findViewById(R.id.old);
         registerBtn.setOnClickListener(this);
+        TextView click = baseView.findViewById(R.id.click);
+        click.setOnClickListener(this);
+        bannerContainer = (ViewGroup) baseView.findViewById(R.id.tengxun);
     }
 
     @SuppressLint("MissingPermission")
@@ -338,7 +167,7 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.old:
                 ConstantUtils.stopSocket();
-                connectActivity.requestPermission2(1);
+                connectActivity.requestPermission1(1);
 //                //扫一扫
 //                if (!BaseActivity.ALLOWED_FLAG) {
 //                    Toast.makeText(connectActivity, "请先授权", Toast.LENGTH_LONG).show();
@@ -352,22 +181,32 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
 //                imgeView.setVisibility(View.VISIBLE);
 //                connectActivity.startScanAsServer();  //启动服务端
                 break;
+            case R.id.click:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final AlertDialog dialog = builder
+                        .setView(R.layout.download_erweima) //自定义的布局文件
+                        .create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.touming);
+                dialog.show();
         }
     }
-    private void initBanners() {
+    public void initBanners() {
         express_container = baseView.findViewById(R.id.express_container);
+        Log.i("走了banners","走了banners");
         mContext = getActivity().getApplicationContext();
         //创建TTAdNative对象，createAdNative(Context context) context需要传入Activity对象
         TTAdManagerHolder.init(getActivity());
         mTTAdNative = TTAdSdk.getAdManager().createAdNative(getActivity());
         //step3:(可选，强烈建议在合适的时机调用):申请部分权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题。
-
+        TTAdManagerHolder.get().requestPermissionIfNecessary(getActivity());
         //step4:创建广告请求参数AdSlot,具体参数含义参考文档
         AdSlot adSlot = new AdSlot.Builder()
-                .setCodeId("946200858") //广告位id
+                .setCodeId("946302006") //广告位id
                 .setAdCount(1) //请求广告数量为1到3条
-                .setExpressViewAcceptedSize(FrameLayout.LayoutParams.MATCH_PARENT, 150) //期望模板广告view的size,单位dp
+                .setExpressViewAcceptedSize(600, 90) //期望模板广告view的size,单位dp
                 .build();
+        Log.i("走了banners","走了banners");
         mTTAdNative.loadBannerExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
             //请求失败回调
             @Override
@@ -381,8 +220,8 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
                 if (ads == null || ads.size() == 0) {
                     return;
                 }
-                Log.i("请求成功","成");
-                Log.i("请求成功",ads.size()+"");
+                Log.i("请求成功——connectFragment","成");
+                Log.i("请求成功——connectFragment",ads.size()+"");
                 mTTAd = ads.get(0);
                 mTTAd.setSlideIntervalTime(30 * 1000);
                 if (mTTAd!=null){
@@ -532,13 +371,52 @@ public class ConnectFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
         ConstantUtils.stopSocket();
     }
-    //    /**
-//     * 隐藏二维码
-//     * */
-//    public void setImageCodeGone(){
-//        if(null == imgeView){
-//            return;
-//        }
-//        imgeView.setVisibility(View.GONE);
-//    }
+
+
+    @Override
+    public void onNoAD(AdError adError) {
+        String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
+                adError.getErrorCode(), adError.getErrorMsg());
+        Log.i(TAG, "onNoAD"+msg);
+    }
+
+    @Override
+    public void onADReceive() {
+        if (bv != null) {
+            Log.i(TAG, "onADReceive" + ", ECPM: " + bv.getECPM() + ", ECPMLevel: " + bv.getECPMLevel());
+//            if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
+                bv.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
+           // }
+        }
+    }
+
+    @Override
+    public void onADExposure() {
+        Log.i(TAG, "onADExposure");
+    }
+
+    @Override
+    public void onADClosed() {
+        Log.i(TAG, "onADClosed");
+    }
+
+    @Override
+    public void onADClicked() {
+        Log.i(TAG, "onADClicked : " + (bv.getExt() != null? bv.getExt().get("clickUrl") : ""));
+    }
+
+    @Override
+    public void onADLeftApplication() {
+        Log.i(TAG, "onADLeftApplication");
+    }
+
+    @Override
+    public void onADOpenOverlay() {
+        Log.i(TAG, "onADOpenOverlay");
+    }
+
+    @Override
+    public void onADCloseOverlay() {
+        Log.i(TAG, "onADCloseOverlay");
+    }
 }

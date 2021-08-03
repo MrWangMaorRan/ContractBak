@@ -25,12 +25,12 @@
     <string name="prompt">提示</string>
     <string name="fangrukuangnei">将二维码放入框内</string>
     <string name="saoyisao">扫一扫</string>
-    <string name="Phone_Clone">紫中手机克隆</string>
+    <string name="Phone_Clone">互传手机克隆换机助手</string>
     <string name="new_phone">新手机</string>
     <string name="Old_phone">旧手机</string>
     <string name="Connect_old_phone">连接旧手机</string>
     <string name="Quick_Download">快捷下载</string>
-    <string name="Scan_QR_code">扫描二维码</string>
+    <string name="Scan_QR_code">扫描新手机生成的二维码热点</string>
     <string name="Contacts">通讯录</string>
     <string name="Gallery">相册</string>
     <string name="Documents">文档</string>
@@ -57,4 +57,31 @@
     <string name="QR">在新设备上选择【新手机】生成二维码</string>
     <string name="neirong">选择传输内容</string>
     <string name="huoquzhong">获取中</string>
+
+    <string name="receive">接收数据</string>
+    <string name="send">发送数据</string>
+    <string name="old_list">旧手机数据一键导入新机</string>
+    <string name="news_list">新手机一键接收旧手机数据</string>
+    <string name="need_two">需要两部手机同时安装app。另一部手机可以</string>
+    <string name="click_here">点击此处下载最新版本</string>
+    <string name="saomiao">另一部手机扫描当前二维码下载本应用，</string>
+    <string name="click_gary">点击灰色区域即可返回上一页</string>
+    <string name="sendfile">发送文件（本机）</string>
+    <string name="clicknews_phone">请在新手机上打开"本应用"，点击"新手机"，</string>
+    <string name="shengcheng">生成二维码热点。</string>
+    <string name="newphone_install">新手机安装本应用</string>
+    <string name="page">首页</string>
+    <string name="privacy_and_user">隐私政策与用户协议</string>
+    <string name="bluetooth_and_wlan">本服务需要联网，调用蓝牙，WLAN,移动数据</string>
+    <string name="network">网络权限，用于打开或关闭蓝牙，更改WLAN</string>
+    <string name="click_agree">状态和网络连接性。点击“同意”,即表示您同意</string>
+    <string name="content">上述内容及手机克隆</string>
+    <string name="privacy">隐私政策</string>
+    <string name="and">及</string>
+    <string name="user">用户协议</string>
+    <string name="agree_btn">同意</string>
+    <string name="close">关闭接收页面</string>
+    <string name="setting">设置</string>
+
+
 </resources>

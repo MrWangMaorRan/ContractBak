@@ -3,7 +3,7 @@
     <style name="AppThemeSplash" parent="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>//取消Actionbar
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">#000000</item>//设置背景
+        <item name="android:windowBackground">@mipmap/start_vp</item>//设置背景
 <!--        <style name="Appwelcome" parent="android:Theme.Translucent.NoTitleBar.Fullscreen"/>-->
     </style>
     <!-- Base application theme. -->
@@ -86,5 +86,15 @@
         <!--<item name="android:windowAnimationStyle">@style/normalDialogAnim</item>-->
         <!-- 背景变暗 -->
         <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="DownloadConfirmDialogFullScreen" parent="android:Theme.Dialog">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="DownloadConfirmDialogAnimationUp">
+        <item name="android:windowEnterAnimation">@anim/download_confirm_dialog_slide_up</item>
+    </style>
+    <style name="DownloadConfirmDialogAnimationRight">
+        <item name="android:windowEnterAnimation">@anim/download_confirm_dialog_slide_right_in</item>
     </style>
 </resources>

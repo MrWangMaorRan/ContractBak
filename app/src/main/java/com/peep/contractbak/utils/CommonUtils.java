@@ -2,14 +2,10 @@ package com.peep.contractbak.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.widget.TextView;
-
 import com.peep.contractbak.BaseApplication;
 import com.peep.contractbak.thread.ThreadPoolUtils;
 

@@ -1,26 +1,13 @@
 package com.peep.contractbak.client;
 
 import android.util.Log;
-
-import com.peep.contractbak.BaseApplication;
-import com.peep.contractbak.bean.BaseBean;
 import com.peep.contractbak.thread.ThreadPoolUtils;
 import com.peep.contractbak.utils.CommonUtils;
 import com.peep.contractbak.utils.ConstantUtils;
-import com.peep.contractbak.utils.ToastUtils;
-import com.peep.contractbak.utils.ToolUtils;
-
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.List;
 
 
 /**

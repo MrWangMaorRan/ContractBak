@@ -1,5 +1,6 @@
 package com.peep.contractbak.fragment;
 
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -69,7 +70,7 @@ public class ScannerFragment extends Fragment implements OnScannerCompletionList
         mScannerView.setOnScannerCompletionListener(this);
         mScannerView.setMediaResId(R.raw.beep);//设置扫描成功的声音
         mScannerView.setDrawText(getResources().getString(R.string.Scan_QR_code), true);
-        mScannerView.setDrawTextColor(Color.RED);
+        mScannerView.setDrawTextColor(Color.GRAY);
         //二维码
         mScannerView.setScanMode(Scanner.ScanMode.QR_CODE_MODE);
 
@@ -94,7 +95,19 @@ public class ScannerFragment extends Fragment implements OnScannerCompletionList
                connectActivity.removeDisconnect();
             }
         });
-        ((TextView)baseView.findViewById(R.id.topbar_title)).setText(getResources().getString(R.string.saoyisao));
+        //((TextView)baseView.findViewById(R.id.topbar_title)).setText(getResources().getString(R.string.saoyisao));
+        baseView.findViewById(R.id.newsphone_download).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final AlertDialog dialog = builder
+                        .setView(R.layout.download_erweima) //自定义的布局文件
+                        .create();
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.touming);
+                dialog.show();
+            }
+        });
     }
 
     @Override

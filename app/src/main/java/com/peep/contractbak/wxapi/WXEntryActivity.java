@@ -1,9 +1,8 @@
 package com.peep.contractbak.wxapi;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 
 import android.os.Bundle;
-
 import com.peep.contractbak.R;
 import com.umeng.socialize.weixin.view.WXCallbackActivity;
 

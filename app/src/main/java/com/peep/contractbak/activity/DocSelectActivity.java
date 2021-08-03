@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
 import com.peep.contractbak.BaseActivity;
 import com.peep.contractbak.R;
 import com.peep.contractbak.adapter.DocSelectApdater;
 import com.peep.contractbak.bean.FileSelectHelper;
 import com.peep.contractbak.utils.ConstantUtils;
 import com.umeng.analytics.MobclickAgent;
-
 import java.io.File;
 
 /**

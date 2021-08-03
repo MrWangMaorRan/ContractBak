@@ -3,6 +3,7 @@ package com.peep.contractbak.utils;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.LocusId;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,7 +15,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.mylhyl.zxing.scanner.encode.QREncode;
-import com.peep.contractbak.BaseApplication;
 import com.peep.contractbak.R;
 import com.peep.contractbak.bean.CalendarBean;
 
@@ -23,7 +23,6 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -59,6 +58,7 @@ public class ToolUtils {
      * @return
      */
     private static String getMacMoreThanM() {
+        Log.i("走了获取mac方法","走了获取mac方法");
         try {
             //获取本机器所有的网络接口
             Enumeration enumeration = NetworkInterface.getNetworkInterfaces();

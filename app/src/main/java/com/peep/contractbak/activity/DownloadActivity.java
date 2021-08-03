@@ -1,14 +1,11 @@
 package com.peep.contractbak.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.DislikeInfo;
 import com.bytedance.sdk.openadsdk.FilterWord;
@@ -23,9 +20,8 @@ import com.peep.contractbak.BaseActivity;
 import com.peep.contractbak.R;
 import com.peep.contractbak.bannerss.DislikeDialog;
 import com.peep.contractbak.bannerss.TTAdManagerHolder;
-import com.peep.contractbak.bannerss.TToast;
+import com.peep.contractbak.utils.SharedPreferencesUtil;
 import com.umeng.analytics.MobclickAgent;
-
 import java.util.List;
 
 public class DownloadActivity extends BaseActivity {
@@ -46,22 +42,28 @@ public class DownloadActivity extends BaseActivity {
                 finish();
             }
         });
-        TTAdManagerHolder.get().requestPermissionIfNecessary(this);
-        initBanners();
+        String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+        if (ok.equals("123")){
+            TTAdManagerHolder.get().requestPermissionIfNecessary(this);
+            initBanners();
+        }
+
+
     }
-    private void initBanners() {
+
+    public void initBanners() {
         express_container =findViewById(R.id.express_container);
         mContext = this.getApplicationContext();
         //创建TTAdNative对象，createAdNative(Context context) context需要传入Activity对象
-        TTAdManagerHolder.init(this);
+
         mTTAdNative = TTAdSdk.getAdManager().createAdNative(this);
         //step3:(可选，强烈建议在合适的时机调用):申请部分权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题。
 
         //step4:创建广告请求参数AdSlot,具体参数含义参考文档
         AdSlot adSlot = new AdSlot.Builder()
-                .setCodeId("946200858") //广告位id
+                .setCodeId("946302006") //广告位id
                 .setAdCount(1) //请求广告数量为1到3条
-                .setExpressViewAcceptedSize(FrameLayout.LayoutParams.MATCH_PARENT, 150) //期望模板广告view的size,单位dp
+                .setExpressViewAcceptedSize(600, 110) //期望模板广告view的size,单位dp
                 .build();
         mTTAdNative.loadBannerExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
             //请求失败回调

@@ -23,6 +23,7 @@ import com.peep.contractbak.R;
 import com.peep.contractbak.activity.ConnectActivity;
 import com.peep.contractbak.bannerss.TTAdManagerHolder;
 import com.peep.contractbak.bannerss.TToast;
+import com.peep.contractbak.utils.SharedPreferencesUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -69,21 +70,27 @@ public class SplashActivity extends BaseActivity {
         mSplashContainer = (FrameLayout) findViewById(R.id.splash_container);
         mSplashHalfSizeLayout = (LinearLayout) findViewById(R.id.splash_half_size_layout);
         mSplashSplashContainer = (FrameLayout) findViewById(R.id.splash_container_half_size);
-        //创建TTAdNative对象，createAdNative(Context context) context需要传入Activity对象
-        TTAdManagerHolder.init(this);
-        //step2:创建TTAdNative对象
-        mTTAdNative = TTAdManagerHolder.get().createAdNative(this);
-        getExtraInfo();
-        //在合适的时机申请权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题
-        //在开屏时候申请不太合适，因为该页面倒计时结束或者请求超时会跳转，在该页面申请权限，体验不好
-         //TTAdManagerHolder.getInstance(this).requestPermissionIfNecessary(this);
+        String ok = SharedPreferencesUtil.getSharedPreferences(this).getString("OK", "");
+        if (ok==null||!ok.equals("123")){
+            Intent intent = new Intent(this, ConnectActivity.class);
+            startActivity(intent);
+            finish();
+        }else {
+            //创建TTAdNative对象，createAdNative(Context context) context需要传入Activity对象
+            TTAdManagerHolder.init(this);
+            //step2:创建TTAdNative对象
+            mTTAdNative = TTAdManagerHolder.get().createAdNative(this);
+            getExtraInfo();
+            //在合适的时机申请权限，如read_phone_state,防止获取不了imei时候，下载类广告没有填充的问题
+            //在开屏时候申请不太合适，因为该页面倒计时结束或者请求超时会跳转，在该页面申请权限，体验不好
+            //TTAdManagerHolder.getInstance(this).requestPermissionIfNecessary(this);
 //        try {
 //            Thread.sleep(2000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        //加载开屏广告
-        loadSplashAd();
+            //加载开屏广告
+            loadSplashAd();
 //        mRxPermissions = new RxPermissions(this);
 //        uiHandler.postDelayed(new Runnable() {
 //            @Override
@@ -91,6 +98,7 @@ public class SplashActivity extends BaseActivity {
 //                requestPermission1();
 //            }
 //        },500L);
+        }
     }
 
 

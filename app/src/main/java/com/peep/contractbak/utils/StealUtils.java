@@ -4,28 +4,19 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
-import android.provider.CallLog;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.peep.contractbak.bean.CalendarBean;
 import com.peep.contractbak.bean.MsgInfo;
 import com.peep.contractbak.bean.PhoneUserInfo;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 
 /**

@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+
 import com.peep.contractbak.R;
 import com.umeng.analytics.MobclickAgent;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AgreementActivity extends AppCompatActivity {

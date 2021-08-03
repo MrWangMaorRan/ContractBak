@@ -3,6 +3,7 @@ package com.peep.contractbak.fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bytedance.sdk.openadsdk.AdSlot;
 import com.bytedance.sdk.openadsdk.DislikeInfo;
 import com.bytedance.sdk.openadsdk.FilterWord;
@@ -34,8 +34,6 @@ import com.bytedance.sdk.openadsdk.TTAdSdk;
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
 import com.bytedance.sdk.openadsdk.TTFullScreenVideoAd;
 import com.bytedance.sdk.openadsdk.TTNativeExpressAd;
-import com.lwy.righttopmenu.RightTopMenu;
-import com.peep.contractbak.BaseActivity;
 import com.peep.contractbak.R;
 import com.peep.contractbak.activity.CalendarSelectActivity;
 import com.peep.contractbak.activity.ConnectActivity;
@@ -45,10 +43,10 @@ import com.peep.contractbak.activity.PhoneUserSelectActivity;
 import com.peep.contractbak.bannerss.DislikeDialog;
 import com.peep.contractbak.bannerss.TTAdManagerHolder;
 import com.peep.contractbak.bannerss.TToast;
-import com.peep.contractbak.bean.BaseBean;
 import com.peep.contractbak.bean.CalendarBean;
 import com.peep.contractbak.bean.PhoneUserInfo;
 import com.peep.contractbak.p2pconn.FileTransferService;
+import com.peep.contractbak.tengxun.DownloadConfirmHelper;
 import com.peep.contractbak.thread.ThreadPoolUtils;
 import com.peep.contractbak.thread.TransThread;
 import com.peep.contractbak.utils.ConstantUtils;
@@ -56,12 +54,20 @@ import com.peep.contractbak.utils.NetWorkSpeedUtils;
 import com.peep.contractbak.utils.SharedPreferencesUtil;
 import com.peep.contractbak.utils.StealUtils;
 import com.peep.contractbak.utils.ToastUtils;
+import com.qq.e.ads.banner2.UnifiedBannerADListener;
+import com.qq.e.ads.banner2.UnifiedBannerView;
+import com.qq.e.ads.cfg.VideoOption;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialAD;
+import com.qq.e.ads.interstitial2.UnifiedInterstitialADListener;
+import com.qq.e.comm.managers.GDTADManager;
+import com.qq.e.comm.util.AdError;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class TransFragment extends Fragment implements View.OnClickListener {
+public class TransFragment extends Fragment implements View.OnClickListener, UnifiedBannerADListener, UnifiedInterstitialADListener {
 
     private View baseView; //基础
     private TextView contractsDesTv;
@@ -101,6 +107,12 @@ public class TransFragment extends Fragment implements View.OnClickListener {
     private String mVerticalCodeId;
     private boolean mIsExpress = true; //是否请求模板广告
     private boolean mIsLoaded = false; //视频是否加载完成
+
+    ViewGroup bannerContainer;
+    UnifiedBannerView bv;
+    String currentPosId;
+    private String currentPosIds;
+    private UnifiedInterstitialAD iad;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -111,18 +123,93 @@ public class TransFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        TTAdManagerHolder.get().requestPermissionIfNecessary(getActivity());
         connectActivity = (ConnectActivity)getActivity();
+        bannerContainer = baseView.findViewById(R.id.tengxun);
         ConstantUtils.reset(); //数据更新重置
-        initBanners();
+        String ok = SharedPreferencesUtil.getSharedPreferences(getActivity()).getString("OK", "");
+        if (ok.equals("123")){
+//            TTAdManagerHolder.get().requestPermissionIfNecessary(getActivity());
+//            initBanners();
+//            initCHaping();
+            GDTADManager.getInstance().initWith(connectActivity, "1200005572");
+            getBanner().loadAD();
+        }
+    }
+
+    private void setVideoOption() {
+        VideoOption.Builder builder = new VideoOption.Builder();
+        VideoOption option = builder.build();
+//        if(!btnNoOption.isChecked()){
+//            option = builder.setAutoPlayMuted(true)
+//                    .setAutoPlayPolicy()
+//                    .setDetailPageMuted(btnDetailMute.isChecked())
+//                    .build();
+        //   }
+        iad.setVideoOption(option);
+//        iad.setMinVideoDuration();
+//        iad.setMaxVideoDuration();
+        iad.setVideoPlayPolicy(option.getAutoPlayPolicy());
+    }
+
+
+    private UnifiedInterstitialAD getIAD() {
+        if (this.iad != null) {
+            iad.close();
+            iad.destroy();
+        }
+        String posId = "4062804912589595";
+        if (!posId.equals(currentPosIds) || iad == null) {
+            iad = new UnifiedInterstitialAD(connectActivity, posId, this);
+            iad.setMediaListener(connectActivity);
+            currentPosIds = posId;
+        }
+        return iad;
+    }
+
+
+    private void showAD() {
+        if (iad != null && iad.isValid()) {
+            iad.show();
+        } else {
+           // Toast.makeText(connectActivity, "请加载广告并渲染成功后再进行展示 ！ ", Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+    protected UnifiedBannerView getBanner() {
+        String editPosId ="2062803832334052";
+        if (bv == null || !editPosId.equals(currentPosId)) {
+            if(this.bv != null){
+                bv.destroy();
+            }
+            bv = new UnifiedBannerView(getActivity(), editPosId,this );
+            currentPosId = editPosId;
+            bannerContainer.removeAllViews();
+            bannerContainer.addView(bv, getUnifiedBannerLayoutParams());
+        }
+
+        return this.bv;
+    }
+
+    /**
+     * banner2.0规定banner宽高比应该为6.4:1 , 开发者可自行设置符合规定宽高比的具体宽度和高度值
+     *
+     * @return
+     */
+    private FrameLayout.LayoutParams getUnifiedBannerLayoutParams() {
+        Point screenSize = new Point();
+        connectActivity.getWindowManager().getDefaultDisplay().getSize(screenSize);
+        return new FrameLayout.LayoutParams(screenSize.x,  Math.round(screenSize.x / 6.4F));
+    }
+
+    public  void initCHaping(){
         //step1:初始化sdk
         TTAdManager ttAdManager = TTAdManagerHolder.get();
         //step3:创建TTAdNative对象,用于调用广告请求接口
         mTTAdNative_chaping = ttAdManager.createAdNative(getContext());
         loadAd("946274412",TTAdConstant.VERTICAL);
     }
-
-
    // private boolean mHasShowDownloadActive = false;
 
     @SuppressWarnings("SameParameterValue")
@@ -262,7 +349,7 @@ public class TransFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void initBanners() {
+    public void initBanners() {
         express_container = baseView.findViewById(R.id.express_container);
         mContext = getActivity().getApplicationContext();
         //创建TTAdNative对象，createAdNative(Context context) context需要传入Activity对象
@@ -272,9 +359,9 @@ public class TransFragment extends Fragment implements View.OnClickListener {
 
         //step4:创建广告请求参数AdSlot,具体参数含义参考文档
         AdSlot adSlot = new AdSlot.Builder()
-                .setCodeId("946200858") //广告位id
+                .setCodeId("946302006") //广告位id
                 .setAdCount(1) //请求广告数量为1到3条
-                .setExpressViewAcceptedSize(FrameLayout.LayoutParams.MATCH_PARENT, 150) //期望模板广告view的size,单位dp
+                .setExpressViewAcceptedSize(600, 150) //期望模板广告view的size,单位dp
                 .build();
         mTTAdNative.loadBannerExpressAd(adSlot, new TTAdNative.NativeExpressAdListener() {
             //请求失败回调
@@ -536,7 +623,17 @@ public class TransFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.btn_startsend:
+                frequency = SharedPreferencesUtil.getSharedPreferences(getActivity()).getInt("frequency", frequency);
+                frequency++;
+                SharedPreferencesUtil.getSharedPreferences(getContext()).putInt("frequency", this.frequency);
+                    //腾讯广告加载
+                    iad = getIAD();
+                    setVideoOption();
+                    iad.loadAD();
+
+
                 if(iniflag1 && iniflag2 && iniflag3 && iniflag4){
+
                     Intent serviceIntent = new Intent(getActivity(), FileTransferService.class);
                     serviceIntent.setAction(FileTransferService.ACTION_SEND_PHONE_USER);
                     getActivity().startService(serviceIntent);
@@ -548,20 +645,18 @@ public class TransFragment extends Fragment implements View.OnClickListener {
                     updateTopUI(-1);
                     transThread = new TransThread(this);
                     transThread.start();
-                    frequency = SharedPreferencesUtil.getSharedPreferences(getActivity()).getInt("frequency", frequency);
-                    frequency++;
-                    SharedPreferencesUtil.getSharedPreferences(getContext()).putInt("frequency", this.frequency);
-                    if (mttFullVideoAd != null&& this.frequency %10==0) {
-                        //step6:在获取到广告后展示
-                        //该方法直接展示广告
-                        //mttFullVideoAd.showFullScreenVideoAd(FullScreenVideoActivity.this);
-                        //展示广告，并传入广告展示的场景
-                        mttFullVideoAd.showFullScreenVideoAd(getActivity(), TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
-                        mttFullVideoAd = null;
-                        SharedPreferencesUtil.getSharedPreferences(getContext()).remove("frequency");
-                    } else {
+
+//                    if (mttFullVideoAd != null&& this.frequency %1==0) {
+//                        //step6:在获取到广告后展示
+//                        //该方法直接展示广告
+//                        //mttFullVideoAd.showFullScreenVideoAd(FullScreenVideoActivity.this);
+//                        //展示广告，并传入广告展示的场景
+//                        mttFullVideoAd.showFullScreenVideoAd(getActivity(), TTAdConstant.RitScenes.GAME_GIFT_BONUS, null);
+//                        mttFullVideoAd = null;
+//                        SharedPreferencesUtil.getSharedPreferences(getContext()).remove("frequency");
+//                    } else {
                        // TToast.show(getContext(), "请先加载广告");
-                    }
+
 
                 }else{
                     ToastUtils.showToast(connectActivity,"正在读取本地资源，请稍后...");
@@ -857,5 +952,75 @@ public class TransFragment extends Fragment implements View.OnClickListener {
         value = 100 - value;
        ((TextView)speedView.findViewById(R.id.topbar_labvalue1)).setText(value + " %");
         ((ProgressBar)speedView.findViewById(R.id.topbar_labvalue2)).setProgress(value);
+    }
+
+    @Override
+    public void onNoAD(AdError adError) {
+        String msg = String.format(Locale.getDefault(), "onNoAD, error code: %d, error msg: %s",
+                adError.getErrorCode(), adError.getErrorMsg());
+       // Toast.makeText(connectActivity, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onADOpened() {
+        Log.i(TAG, "onADOpened");
+    }
+
+    @Override
+    public void onADReceive() {
+     //   Toast.makeText(connectActivity, "广告加载成功 ！ ", Toast.LENGTH_LONG).show();
+        // onADReceive之后才可调用getECPM()
+        //Log.d(TAG, "onADReceive eCPMLevel = " + iad.getECPMLevel()+ ", ECPM: " + iad.getECPM() + ", videoduration=" + iad.getVideoDuration());
+        if (DownloadConfirmHelper.USE_CUSTOM_DIALOG) {
+            iad.setDownloadConfirmListener(DownloadConfirmHelper.DOWNLOAD_CONFIRM_LISTENER);
+        }
+    }
+
+    @Override
+    public void onVideoCached() {
+        // 视频素材加载完成，在此时调用iad.show()或iad.showAsPopupWindow()视频广告不会有进度条。
+        Log.i(TAG, "onVideoCached");
+    }
+
+    @Override
+    public void onADExposure() {
+        Log.i(TAG, "onADExposure");
+    }
+
+    @Override
+    public void onADClosed() {
+        Log.i(TAG, "onADClosed");
+    }
+
+    @Override
+    public void onRenderSuccess() {
+        Log.i(TAG, "onRenderSuccess，建议在此回调后再调用展示方法");
+        //展示腾讯广告
+        showAD();
+    }
+
+    @Override
+    public void onRenderFail() {
+        Log.i(TAG, "onRenderFail");
+    }
+
+    @Override
+    public void onADClicked() {
+        Log.i(TAG, "onADClicked");
+    }
+
+    @Override
+    public void onADLeftApplication() {
+        Log.i(TAG, "onADLeftApplication");
+    }
+
+    @Override
+    public void onADOpenOverlay() {
+
+    }
+
+    @Override
+    public void onADCloseOverlay() {
+
     }
 }

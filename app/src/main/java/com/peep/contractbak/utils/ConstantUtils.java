@@ -1,13 +1,8 @@
 package com.peep.contractbak.utils;
 
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSONObject;
 import com.peep.contractbak.bean.CalendarBean;
 import com.peep.contractbak.bean.PhoneUserInfo;
-import com.peep.contractbak.client.ClientSocketFileManager;
-import com.peep.contractbak.client.ClientSocketManager;
 import com.peep.contractbak.server.ServerSocketFileServer;
 import com.peep.contractbak.server.ServerSocketManager;
 

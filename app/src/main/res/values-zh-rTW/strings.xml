@@ -24,7 +24,7 @@
     <string name="prompt">提示</string>
     <string name="fangrukuangnei">将二维码放入框内</string>
     <string name="saoyisao">掃一掃 </string>
-    <string name="Phone_Clone">紫中手機克隆</string>
+    <string name="Phone_Clone">手機尅隆</string>
     <string name="new_phone">新手機</string>
     <string name="Old_phone">舊手機</string>
     <string name="Connect_old_phone">連接舊手機</string>
@@ -58,4 +58,31 @@
     <string name="QR">在新設備上選擇【新手機】生成二維碼</string>
     <string name="neirong">選擇傳輸內容</string>
     <string name="huoquzhong">獲取中</string>
+
+    <string name="send">發送數據</string>
+    <string name="receive">接收數據</string>
+    <string name="old_list">舊手機數據傳輸到新手機</string>
+    <string name="news_list">新手機便捷接收舊手機數據</string>
+    <string name="need_two">需要兩部手機同時安裝app。另一部手機可以</string>
+    <string name="click_here">點擊此處下載最新版本</string>
+    <string name="saomiao">另一部手機掃描當前二維碼下載本應用，</string>
+    <string name="click_gary">點擊灰色區域即可返回上一頁</string>
+    <string name="sendfile">發送文件（本機）</string>
+    <string name="clicknews_phone">請在新手機上打開"本應用"，點擊"新手機"，</string>
+    <string name="shengcheng">生成二維碼熱點。</string>
+    <string name="newphone_install">新手機安裝本應用</string>
+    <string name="page">首頁</string>
+    <string name="privacy_and_user">隱私政策與使用者協定</string>
+    <string name="bluetooth_and_wlan">隱私政策與使用者協定本服務需要聯網，調用藍牙，WLAN，移動數據</string>
+    <string name="network">網絡許可權，用於打開或關閉藍牙，更改WLAN</string>
+    <string name="click_agree">状态和网络连接性。点击“同意”,即表示您同意</string>
+    <string name="content">上述內容及手機尅隆</string>
+    <string name="privacy">隱私政策</string>
+    <string name="and">及</string>
+    <string name="user">用戶</string>
+    <string name="agree_btn">同意</string>
+    <string name="close">關閉接收頁面</string>
+    <string name="setting">設定</string>
+
+
 </resources>
